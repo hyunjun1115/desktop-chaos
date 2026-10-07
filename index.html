@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#b8f2ff" />
+  <title>퇴근.EXE — 화면 스트레스 해체실</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@500;700;900&display=swap');
+    :root{--ink:#151515;--paper:#fffdf5;--yellow:#ffe45c;--pink:#ff6f91;--cyan:#79e8ff;--green:#76ed9c;--line:3px solid var(--ink)}
+    *{box-sizing:border-box} html,body{margin:0;height:100%;overflow:hidden;background:#b8f2ff;font-family:'Noto Sans KR',sans-serif;color:var(--ink)}
+    body{background-image:linear-gradient(#fff5 1px,transparent 1px),linear-gradient(90deg,#fff5 1px,transparent 1px);background-size:28px 28px;cursor:crosshair;user-select:none}
+    button{font:inherit;color:inherit} .top{height:78px;display:flex;align-items:center;gap:18px;padding:12px 18px;background:var(--yellow);border-bottom:var(--line);position:relative;z-index:30}
+    .brand{font-family:'Black Han Sans';font-size:30px;letter-spacing:-1px;white-space:nowrap}.brand small{font:900 11px 'Noto Sans KR';display:block;letter-spacing:2px}
+    .stats{margin-left:auto;display:flex;gap:10px}.pill{background:var(--paper);border:var(--line);border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:3px 3px 0 var(--ink)}
+    .main{height:calc(100% - 78px);display:grid;grid-template-columns:188px 1fr 190px;gap:14px;padding:14px}
+    .panel,.desktop{border:var(--line);box-shadow:6px 6px 0 var(--ink);background:var(--paper);position:relative;overflow:hidden}
+    .panel{padding:12px;z-index:20}.panel h2{font:22px 'Black Han Sans';margin:2px 0 11px}.tool{width:100%;border:2px solid var(--ink);background:#fff;padding:9px 8px;margin-bottom:8px;text-align:left;font-weight:900;border-radius:10px;cursor:pointer;transition:.12s}.tool:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--ink)}.tool.active{background:var(--pink);box-shadow:3px 3px 0 var(--ink);transform:translate(-2px,-2px)}
+    .tool span{font-size:20px;margin-right:6px}.reset,.sound{width:100%;border:var(--line);padding:9px;background:var(--cyan);font-weight:900;cursor:pointer;margin-top:7px}.sound{background:var(--green)}
+    .desktop{background:linear-gradient(135deg,#59cfbc,#4aa6dc);isolation:isolate}.desktop:after{content:'클릭하거나 드래그해서 마음껏 망가뜨리세요';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-5deg);font:30px 'Black Han Sans';color:#ffffff60;text-align:center;pointer-events:none;z-index:-1}
+    .desktop.shake{animation:shake .18s linear}.taskbar{position:absolute;bottom:0;left:0;right:0;height:48px;background:#dce4ea;border-top:3px solid #222;display:flex;align-items:center;padding:6px;z-index:4}.start{border:2px solid #222;background:var(--green);font-weight:900;padding:5px 11px}.clock{margin-left:auto;font-weight:900;padding:0 10px}
+    .icons{display:flex;gap:18px;padding:18px;flex-wrap:wrap;width:260px}.icon{width:70px;text-align:center;color:#fff;font-weight:900;text-shadow:1px 1px 2px #000}.icon b{display:block;font-size:32px;filter:drop-shadow(2px 2px 0 #000)}
+    .window{position:absolute;width:min(470px,70%);height:285px;left:24%;top:15%;background:#eee;border:3px solid #222;box-shadow:7px 7px 0 #0005;z-index:3}.titlebar{height:37px;background:#164cbb;color:#fff;display:flex;align-items:center;padding:0 9px;font-weight:900;border-bottom:3px solid #222}.x{margin-left:auto;background:#ef5350;border:2px solid #fff;color:white;font-weight:900}.window-body{padding:18px;background:#fff;height:calc(100% - 37px)}.fake-mail{border:2px solid #222;padding:10px;margin:9px 0;background:#f4f4f4}.urgent{color:#e83737;font-weight:900}
+    .tool-cursor{position:absolute;z-index:25;pointer-events:none;font-size:58px;line-height:1;transform:translate(-20%,-72%) rotate(-18deg);filter:drop-shadow(5px 7px 2px #0008);opacity:0;transition:opacity .1s;will-change:left,top,transform}.desktop:hover .tool-cursor{opacity:1}.tool-cursor.hammer-hit{animation:hammerHit .2s ease-out}.tool-cursor.recoil{animation:recoil .18s ease-out}.tool-cursor.cannon-recoil{animation:cannonRecoil .32s ease-out}
+    canvas{position:absolute;inset:0;width:100%;height:100%;z-index:10;pointer-events:none}.fx{position:absolute;pointer-events:none;z-index:12}.crack{width:160px;height:160px;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,transparent 0 13deg,#111 14deg 16deg,transparent 17deg 39deg);filter:drop-shadow(0 0 3px #fff);clip-path:polygon(50% 0,57% 39%,100% 30%,63% 50%,92% 80%,57% 61%,48% 100%,43% 62%,8% 83%,37% 53%,0 34%,40% 43%)}
+    .hole{width:120px;height:120px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#000 0 34%,#411d56 36%,#b25cff 49%,transparent 53%);animation:pulse .45s ease-out}.bullet{width:26px;height:26px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#070707 0 24%,#fff 27% 31%,#ffb000 34% 48%,transparent 52%);box-shadow:0 0 18px #ffdf64;animation:pulse .16s ease-out}.blast{width:330px;height:330px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fff 0 7%,#ffe66b 9% 24%,#ff6b35 26% 39%,#4c2018 43% 48%,transparent 53%);filter:drop-shadow(0 0 30px #ff7438);animation:blast .62s ease-out forwards}.blast:after{content:'';position:absolute;inset:8%;border:10px solid #fff3a4;border-radius:50%;box-shadow:0 0 0 18px #ff623788,0 0 35px 30px #ff9d3d88}.pop{font:28px 'Black Han Sans';color:#fff;text-shadow:3px 3px 0 #111;transform:translate(-50%,-50%);animation:pop .6s ease-out forwards}.impact-big{font-size:48px;letter-spacing:2px}.impact-cannon{font-size:62px;color:#ffe55b;text-shadow:5px 5px 0 #a31919,8px 8px 0 #111}
+    .cannon-hole{width:86px;height:86px;transform:translate(-50%,-50%) rotate(12deg);border-radius:46% 54% 42% 58%;background:radial-gradient(circle,#050505 0 25%,#24140d 27% 43%,#6d3520 45% 53%,#161616 55% 58%,transparent 62%);box-shadow:inset 0 0 13px #000,0 0 12px 4px #2b160b99;filter:drop-shadow(3px 4px 1px #0008)}
+    .tips{font-size:13px;line-height:1.65}.tips strong{display:block;font-size:15px;margin-top:10px}.meter{height:20px;border:2px solid #222;background:#fff;margin-top:8px}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--yellow),var(--pink));transition:.2s}.badge{background:var(--yellow);border:2px solid #222;padding:8px;margin-top:12px;font-weight:900;transform:rotate(2deg)}
+    @keyframes shake{15%{transform:translate(12px,-9px) rotate(.3deg)}35%{transform:translate(-13px,8px) rotate(-.3deg)}55%{transform:translate(10px,9px)}75%{transform:translate(-7px,-6px)}90%{transform:translate(4px,3px)}}@keyframes pulse{from{scale:.3;opacity:.3}to{scale:1;opacity:1}}@keyframes blast{from{scale:.08;opacity:1}55%{opacity:1}to{scale:1.45;opacity:0}}@keyframes pop{to{transform:translate(-50%,-145%) rotate(-8deg);opacity:0}}@keyframes hammerHit{50%{transform:translate(-28%,-50%) rotate(42deg) scale(1.25)}}@keyframes recoil{50%{transform:translate(-40%,-85%) rotate(-32deg) scale(1.15)}}@keyframes cannonRecoil{45%{transform:translate(-55%,-90%) rotate(-38deg) scale(1.35)}}
+    @media(max-width:820px){.main{grid-template-columns:132px 1fr}.right{display:none}.brand{font-size:22px}.stats .pill:first-child{display:none}.tool{font-size:12px;padding:8px 4px}.tool span{font-size:16px}.window{left:14%;width:78%}}
+  </style>
+</head>
+<body>
+  <header class="top"><div class="brand">퇴근.EXE<small>화면 스트레스 해체실</small></div><div class="stats"><div class="pill">콤보 <b id="combo">0</b>x</div><div class="pill">파괴력 <b id="score">0000</b></div></div></header>
+  <main class="main">
+    <aside class="panel"><h2>도구함</h2>
+      <button class="tool active" data-tool="hammer"><span>🔨</span>망치</button><button class="tool" data-tool="gun"><span>🔫</span>권총</button><button class="tool" data-tool="cannon"><span>💣</span>대포</button><button class="tool" data-tool="blackhole"><span>🕳️</span>블랙홀</button><button class="tool" data-tool="stamp"><span>💢</span>퇴근 도장</button>
+      <button class="reset" id="reset">↻ 새 화면</button><button class="sound" id="sound">♪ 소리 켬</button>
+    </aside>
+    <section class="desktop" id="desktop" aria-label="파괴 가능한 가상 데스크톱">
+      <div class="icons"><div class="icon"><b>🗑️</b>업무</div><div class="icon"><b>📁</b>긴급_진짜최종</div><div class="icon"><b>📊</b>회의자료</div><div class="icon"><b>😵</b>내 멘탈</div></div>
+      <div class="window"><div class="titlebar">📨 오늘의 받은 편지함 <button class="x">×</button></div><div class="window-body"><b>읽지 않은 메일 99+</b><div class="fake-mail"><span class="urgent">[긴급]</span> 금일 중 검토 부탁드립니다</div><div class="fake-mail">RE: RE: RE: 잠깐 통화 가능하세요?</div><div class="fake-mail">수정본_최종_진짜최종_v12</div></div></div>
+      <canvas id="damage"></canvas><div class="tool-cursor" id="toolCursor" aria-hidden="true">🔨</div><div class="taskbar"><button class="start">▣ 시작</button><div class="clock" id="clock">18:00</div></div>
+    </section>
+    <aside class="panel right"><h2>해체 기록</h2><div class="tips">선택한 도구가 마우스를 따라옵니다. 화면을 클릭하면 도구가 직접 움직이며 타격합니다.<strong>스트레스 배출량</strong><div class="meter"><i id="meter"></i></div><div class="badge" id="message">아직 너무 멀쩡합니다.</div><strong>오늘의 규칙</strong>현실의 모니터는 소중히.<br>여기서는 마음껏!</div></aside>
+  </main>
+  <script>
+    const desk=document.querySelector('#desktop'), canvas=document.querySelector('#damage'),ctx=canvas.getContext('2d'),scoreEl=document.querySelector('#score'),comboEl=document.querySelector('#combo'),meter=document.querySelector('#meter'),message=document.querySelector('#message'),toolCursor=document.querySelector('#toolCursor'),toolIcons={hammer:'🔨',gun:'🔫',cannon:'💣',blackhole:'🕳️',stamp:'💢'};
+    let tool='hammer',score=0,combo=0,last=0,drawing=false,sound=true,audio;
+    function size(){canvas.width=desk.clientWidth*devicePixelRatio;canvas.height=desk.clientHeight*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio)} addEventListener('resize',size);size();
+    document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{document.querySelector('.tool.active').classList.remove('active');b.classList.add('active');tool=b.dataset.tool;toolCursor.textContent=toolIcons[tool]});
+    function beep(type){if(!sound)return;audio??=new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.type=type==='gun'?'square':'sawtooth';o.frequency.setValueAtTime(type==='blackhole'?75:type==='cannon'?95:type==='gun'?520:320,audio.currentTime);o.frequency.exponentialRampToValueAtTime(type==='gun'?90:45,audio.currentTime+(type==='cannon'?.28:.14));g.gain.setValueAtTime(type==='cannon'?.09:.045,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+(type==='cannon'?.3:.15));o.start();o.stop(audio.currentTime+(type==='cannon'?.3:.15))}
+    function pos(e){const r=desk.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+    function addFx(cls,x,y,text){const d=document.createElement('div');d.className='fx '+cls;d.style.left=x+'px';d.style.top=y+'px';if(text)d.textContent=text;desk.append(d);if(cls==='pop'||cls==='zap')setTimeout(()=>d.remove(),650)}
+    function hit(e){const p=pos(e),now=Date.now();combo=now-last<650?combo+1:1;last=now;const pts={hammer:45,gun:35,cannon:120,blackhole:100,stamp:70}[tool];score+=pts*combo;scoreEl.textContent=String(score).padStart(4,'0');comboEl.textContent=combo;meter.style.width=Math.min(100,score/35)+'%';message.textContent=score>3000?'완벽합니다. 이제 퇴근하세요.':score>1600?'화면이 항복 직전입니다!':score>600?'좋아요, 훨씬 후련합니다.':'조금 더 과감하게!';beep(tool);
+      if(tool==='hammer'){addFx('crack',p.x,p.y);desk.classList.remove('shake');void desk.offsetWidth;desk.classList.add('shake');addFx('pop impact-big',p.x,p.y-34,'쾅!!')}
+      if(tool==='blackhole')addFx('hole',p.x,p.y);
+      if(tool==='stamp')addFx('pop',p.x,p.y,'퇴 근');
+      if(tool==='gun'){addFx('bullet',p.x,p.y);addFx('pop',p.x+24,p.y-16,'탕!')}
+      if(tool==='cannon'){addFx('cannon-hole',p.x,p.y);addFx('blast',p.x,p.y);addFx('crack',p.x,p.y);setTimeout(()=>addFx('blast',p.x,p.y),90);desk.classList.remove('shake');void desk.offsetWidth;desk.classList.add('shake');addFx('pop impact-cannon',p.x,p.y-65,'콰아광!!!')}
+    }
+    desk.addEventListener('pointermove',e=>{const p=pos(e);toolCursor.style.left=p.x+'px';toolCursor.style.top=p.y+'px';if(drawing&&tool==='gun')hit(e)});
+    desk.addEventListener('pointerdown',e=>{drawing=true;desk.setPointerCapture(e.pointerId);toolCursor.className='tool-cursor';void toolCursor.offsetWidth;toolCursor.classList.add(tool==='hammer'?'hammer-hit':tool==='cannon'?'cannon-recoil':'recoil');hit(e)});desk.addEventListener('pointerup',()=>{drawing=false;setTimeout(()=>toolCursor.className='tool-cursor',180)});
+    document.querySelector('#reset').onclick=()=>{document.querySelectorAll('.fx').forEach(x=>x.remove());ctx.clearRect(0,0,canvas.width,canvas.height);score=combo=0;scoreEl.textContent='0000';comboEl.textContent='0';meter.style.width='0';message.textContent='새 화면이 도착했습니다.'};
+    document.querySelector('#sound').onclick=e=>{sound=!sound;e.currentTarget.textContent=sound?'♪ 소리 켬':'♪ 소리 끔'};
+    document.querySelector('.x').onclick=e=>{e.stopPropagation();document.querySelector('.window').style.display='none'};
+    function tick(){const d=new Date();document.querySelector('#clock').textContent=d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}).replace('오후 ','').replace('오전 ','')}tick();setInterval(tick,30000);
+  </script>
+</body>
+</html>
